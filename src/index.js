@@ -9,17 +9,22 @@ dotenv.config({ path: './env' });
 // second aproach 
 import connectDB from "./db/index.js"
 connectDB()
-/*.then(()=>{
+.then(()=>{ 
    app.listen(process.env.PORT || 8000,()=>{
-      console.log(`server is running at port ${process.env.PORT}`);
-      
-   } )
+      console.log("Server is running at:",process.env.PORT);
+      //`server is running at port ${process.env.PORT}`
+      }
+    )
+    app.on("error",(error) => {
+      console.log("ERROR",error);
+      throw error;
+    })
 })
 .catch((err)=>{
-   console.log("MONGOdB connection failed",error);
+   console.log("MONGOdB connection failed",err);
    
 })
-*/
+
 
    //  First aparoach to connect the database using the IIFE function 
 
