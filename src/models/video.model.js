@@ -19,7 +19,7 @@ const videoSchema = new Schema(
                type:Schema.Types.ObjectId,
                ref: "User",
           },
-          tile: {
+          title: {
                type: String,
                required: true,
           },
