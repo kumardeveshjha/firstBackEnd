@@ -22,4 +22,29 @@ app.use(express.static("public"));
 app.use(cookieParser())
 
 
-export default app;
+
+// routes 
+
+import userRouter from "./routes/user.routes.js"
+
+
+
+// routes declaration here we will use the middleware syntax 
+
+// app.use("/users", userRouter)   // here it will the calling of the user registration
+
+
+// now we will use api now we must define our api 
+
+app.use("/api/v1/users", userRouter)
+
+
+
+
+
+
+
+
+
+
+export {app};

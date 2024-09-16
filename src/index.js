@@ -2,11 +2,9 @@
 
 import dotenv from 'dotenv';
 dotenv.config({ path: './env' });
+import {app} from "./app.js"
 
-
-
-
-// second aproach 
+// second aproach to connect database to the backend server 
 import connectDB from "./db/index.js"
 connectDB()
 .then(()=>{ 
@@ -26,7 +24,102 @@ connectDB()
 })
 
 
-   //  First aparoach to connect the database using the IIFE function 
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//  First aparoach to connect the database using the IIFE function 
 
 // import mongoose from "mongoose"
 // import { DB_NAME } from "./constants.js"
