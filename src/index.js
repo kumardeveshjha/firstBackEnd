@@ -1,7 +1,7 @@
 
 
 import dotenv from 'dotenv';
-dotenv.config({ path: './env' });
+dotenv.config({ path: './.env' });
 import {app} from "./app.js"
 
 // second aproach to connect database to the backend server 

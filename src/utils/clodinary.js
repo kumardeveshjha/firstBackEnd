@@ -16,7 +16,6 @@ cloudinary.config({
           const response = await cloudinary.uploader.upload(localPath, {
                resource_type:"auto"    // now it will autodetect the type of the file uploaded
           })
-
            // file has been uploaded successfully
            console.log("file has been uploaded successfully", response.url);
            return response
@@ -26,3 +25,5 @@ cloudinary.config({
           return null;   
      }
  }
+
+ export {uploadOnCloudinary}
