@@ -25,7 +25,7 @@ app.use(cookieParser())
 
 // routes 
 
-import userRouter from "./routes/user.routes.js"
+import {router as userRouter} from "./routes/user.routes.js"
 
 
 
@@ -37,9 +37,7 @@ import userRouter from "./routes/user.routes.js"
 // now we will use api now we must define our api 
 
 app.use("/api/v1/users", userRouter)
-
-
-
+//http://localhost:8000/api/v1/users/register       this will be the url for the registration 
 
 
 

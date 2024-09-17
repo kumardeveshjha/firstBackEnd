@@ -10,9 +10,8 @@ const userSchema = new Schema(
          uerName:{
           type:String,
           required: true,
-          unique:True,
+          unique:true,
           lowercase: true,
-          trim: true,
           trim: true,
           index: true
          },
@@ -25,7 +24,7 @@ const userSchema = new Schema(
          },
          fullName:{
           type: String,
-          required: true,
+          required: [true, "FullName is required"],
           trim:  true,
           index:  true
          },
