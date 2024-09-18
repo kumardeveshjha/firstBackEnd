@@ -15,6 +15,7 @@ import { APIResponse } from "../utils/APIResponse.js";
 
 // user registration 
 
+
 const  registerUser = asyncHandler( async(req,res)=>{
       // get user details from frontend
       // validation - not empty
@@ -26,18 +27,20 @@ const  registerUser = asyncHandler( async(req,res)=>{
       // check for user creation
       // return response 
 
-      const {username,email,fullname,password} = req.body
-      console.log("email:",email,"Fullname:", fullname,"password:",password);
+      const {userName,email,fullName,password} = req.body
+      console.log("email:",email,"Fullname:", fullName,"password:",password);
+     
       
-      // Here we are validatinb the the details and also cjhecking for the information we called APIerror module as
-      // if (fullname=="") {
+      // Here we are validat in the the details and also cjhecking for the information we called APIerror module as
+      // if (fullName=="") {
       //       throw new ApiError(400,"full name is required")       // this is the conventional method to check for the the validation
       // }
 
-      // now we will write for the advance method to check for validation 
+
+      // // now we will write for the advance method to check for validation 
 
       if(
-            [username,email,fullname,password].some((field)=>{
+            [userName,email,fullName,password].some((field)=>{
                   field?.trim()===""
             })
       ){
@@ -45,7 +48,7 @@ const  registerUser = asyncHandler( async(req,res)=>{
       }
 
       const existingUser = User.findOne({
-            $or :[{ username }, { email }]   // to check for the existing user we use find methos 
+            $or :[{ userName }, { email }]   // to check for the existing user we use find methos 
       })
 
       if(existingUser){
@@ -60,47 +63,47 @@ const  registerUser = asyncHandler( async(req,res)=>{
             throw new ApiError(400,"Avatar is missing*")  // check for the avatar
       }
       
-      // check for the Cover Image 
-      if(!localCoverImagePath){
-            throw new ApiError(400,"Cover Image is Required*")
-      }
+      // // check for the Cover Image 
+      // if(!localCoverImagePath){
+      //       throw new ApiError(400,"Cover Image is Required*")
+      // }
  
-      // upload the files on cloudinary we use await becuase it will take time to upload on cloudinary 
-      // 
+      // // upload the files on cloudinary we use await becuase it will take time to upload on cloudinary 
+      // // 
       const avatar = await uploadOnCloudinary(localAvatarPath);
       const coverImage = await uploadOnCloudinary(localCoverImagePath);
       
       if(!avatar){
             throw new ApiError(400,"Avatar image does not uploaded")
       }
-      if(!coverImage){
-            throw new ApiError(400,"Cover image does not uploaded")
-      }
+      // if(!coverImage){
+      //       throw new ApiError(400,"Cover image does not uploaded")
+      // }
 
      const user = await  User.create({
-            fullname,
+            fullName,
             email,
             avatar: avatar.url,
             coverImage: coverImage?.url || "", // this is to check for the coverImage uploaded or not
-            email,
             password,
-            username: username.toLowerCase()
+            userName: userName.toLowerCase()
 
       })
        
       const storedUser = await User.findById(user._id).select(
-            "-password -refreshToken"    // this is to remove password and refresh token 
+            "-password -refreshToken"    // this is to remove password and refresh token from the stored database 
       )
       if(!storedUser){
             throw new ApiError(500,"Something went wrong while registering the user")
       }
 
       return res.status(201).json(
-            new APIResponse(200,storedUser,`${user.fullname} has been created`)
+            new APIResponse(200,storedUser,"User has been created")
       )
     
 
-})
+}) 
+      
 
 
 
