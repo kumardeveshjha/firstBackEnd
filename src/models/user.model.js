@@ -7,7 +7,7 @@ import bcrypt from  'bcrypt'
 
 const userSchema = new Schema(
      {
-         uerName:{
+         userName:{
           type:String,
           required: true,
           unique:true,
@@ -50,7 +50,7 @@ const userSchema = new Schema(
      },{timestamps:true})
 
 userSchema.pre("save", async function (next){        // pre is a hook which executes just before we save any data // also don't use arrow function here 
-        if(this.isModfied("password")){                   // here we will encrypt the password 
+        if(this.isModified("password")){                   // here we will encrypt the password 
             this.passwrord = await bcrypt.hash(this.password,10)
         }
         next()

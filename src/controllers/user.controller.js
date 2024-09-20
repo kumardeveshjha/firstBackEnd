@@ -34,7 +34,7 @@ const  registerUser = asyncHandler( async(req,res)=>{
       console.log('req.files?.coverImage:', req.files?.coverImage);
       
       // Here we are validat in the the details and also cjhecking for the information we called APIerror module as
-      // if (fullName=="") {
+      // if (fullName==="") {
       //       throw new ApiError(400,"full name is required")       // this is the conventional method to check for the the validation
       // }
 
@@ -43,7 +43,7 @@ const  registerUser = asyncHandler( async(req,res)=>{
 
       if(
             [userName,email,fullName,password].some((field)=>{
-                  field?.trim()===""
+                  field?.trim()==="";
             })
       ){
             throw new ApiError(400,"All fields are required");
@@ -57,8 +57,10 @@ const  registerUser = asyncHandler( async(req,res)=>{
             throw new ApiError(409,"The user already existed")
       }
       
+
+      //  for the path of avatar and files which are to be uploaded 
       const localAvatarPath = req.files?.avatar[0]?.path;
-      // const localCoverImagePath  = req.files?.coverImage[0]?.path
+      const localCoverImagePath  = req.files?.coverImage[0]?.path
       
       // check for the avatar 
       if(!localAvatarPath){
@@ -73,7 +75,7 @@ const  registerUser = asyncHandler( async(req,res)=>{
       // // upload the files on cloudinary we use await becuase it will take time to upload on cloudinary 
       // // 
       const avatar = await uploadOnCloudinary(localAvatarPath);
-      // const coverImage = await uploadOnCloudinary(localCoverImagePath);
+      const coverImage = await uploadOnCloudinary(localCoverImagePath);
       
       if(!avatar){
             throw new ApiError(400,"Avatar image does not uploaded")
@@ -82,7 +84,7 @@ const  registerUser = asyncHandler( async(req,res)=>{
       //       throw new ApiError(400,"Cover image does not uploaded")
       // }
 
-     const user = await  User.create({
+     const user = await User.create({
             fullName,
             email,
             avatar: avatar.url,
