@@ -29,9 +29,9 @@ const  registerUser = asyncHandler( async(req,res)=>{
 
       const {userName,email,fullName,password} = req.body
       console.log("email:",email,"Fullname:", fullName,"password:",password);
+      
+      // check
       console.log('req.files:', req.files);
-      console.log('req.files?.avatar:', req.files?.avatar);
-      console.log('req.files?.coverImage:', req.files?.coverImage);
       
       // Here we are validat in the the details and also cjhecking for the information we called APIerror module as
       // if (fullName==="") {
@@ -58,9 +58,18 @@ const  registerUser = asyncHandler( async(req,res)=>{
       }
       
 
-      //  for the path of avatar and files which are to be uploaded 
+      //  for the path of avatar and files which are to be uploaded (advance method using optional chaining)
       const localAvatarPath = req.files?.avatar[0]?.path;
       const localCoverImagePath  = req.files?.coverImage[0]?.path
+      
+
+      // to avoid optional chaining we use following code 
+      /* let localCoverImagePath;
+      if(req.files && Array.isArray(req.files.coverImage) 
+            && req.files.coverImage.length > 0){
+            localCoverImagePath = req.files.coverImage[0].path
+      }
+      */
       
       // check for the avatar 
       if(!localAvatarPath){
