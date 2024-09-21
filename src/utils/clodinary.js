@@ -18,7 +18,7 @@ cloudinary.config({
            // file has been uploaded successfully
            console.log("file has been uploaded on 'cloudinary' successfully", 
                response.url);
-               fs.unlinkSync(localFilePath);     // this will automatically remove file from the storage when it will uploaded
+           fs.unlinkSync(localFilePath);     // this will automatically remove file from the storage when it will uploaded
            return response
 
      } catch (error) {
