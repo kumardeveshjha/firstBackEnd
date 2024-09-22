@@ -145,6 +145,13 @@ if(!user){
 }
 
 
+// This is the method you created wchich you returns from database
+const isPasswordValid = await user.isPasswordCorrect(password);
+
+// if user password is not correct then throw error 
+if(!isPasswordValid){
+      throw new APIResponse(400,"PLease enter correct password ");
+}
 
 
 
@@ -156,4 +163,8 @@ if(!user){
 
 
 
-export {registerUser}
+export {
+      registerUser,
+      userlogin
+
+}
