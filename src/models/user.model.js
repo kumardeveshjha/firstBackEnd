@@ -60,7 +60,8 @@ userSchema.pre("save", async function (next){        // pre is a hook which exec
      // costum method 
     
 userSchema.methods.isPasswordCorrect = async function (password){
-        return await bcrypt.compare(password,this.password)
+        return await bcrypt.compare(password,this.password)      // here first password is the password which will be entered by the user second id the database password
+        
      }
 userSchema.methods.generateAccessToken = function(){
     return jwt.sign(

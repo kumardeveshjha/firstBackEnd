@@ -15,6 +15,24 @@ import { APIResponse } from "../utils/APIResponse.js";
 
 // user registration 
 
+// here we will define the tokens access and refresh 
+
+const generateAccessAndRefreshToken = async (userId)=>{
+      try {
+            const user = User.findById(userId);   // here user is imported as an object
+            const accessToken = user.generateAccessToken()
+            const refreshToken = user.generateRefreshToken()
+
+            user.refreshToken = refreshToken;  // added the refresh token in user object 
+            user.save({validateBeforeSave: false})
+
+            return {accessToken, refreshToken}  
+
+      } catch (error) {
+            throw new ApiError(500,"Something went wrong while generating refresh and access token");
+      }
+}
+
 
 const  registerUser = asyncHandler( async(req,res)=>{
       // get user details from frontend
@@ -135,9 +153,9 @@ if(!username || !email) {
       throw new ApiError(400,"Username or email is required")
 }
 
-const user = await User.findOne({
-      $or : [{username},{email}]
-}
+const user = await User.findOne({    // user is the imported User from model 
+      $or : [{username},{email}]     // $or is the mongoDb oparator
+}                                    
 )
 
 if(!user){
@@ -153,10 +171,44 @@ if(!isPasswordValid){
       throw new APIResponse(400,"PLease enter correct password ");
 }
 
+// Now we can take the access and refresh token 
+
+const {accessToken, refreshToken} = await generateAccessAndRefreshToken(user._id)  // here we have destructured it 
+
+const loggedInUser = await User.findById(user._id).
+select("-password -refreshToken")          // so now this is the details and all fields which we have to send the logged user
+
+// Now cookies 
+
+const options = {
+      httpOnly: true,        // by these two properies the cokkies can only be modified from server 
+      secure: true          // user can not modify the cookies
+}
 
 
+return res.
+status(200)
+.cookie("accessToken",accessToken,options)
+.cookie("refreshToken",refreshToken, options)
+.json(
+      new APIResponse(       // this is so the user can change the cookies 
+            200,
+            {
+                  user: loggedInUser, accessToken,
+                  refreshToken
+            },
+            "User Has been registered successfully"
+      )
+)
+
+})
 
 
+// Now for logOut user 
+
+const logoutUser = asyncHandler(async(req,res)=>{
+      // First we have to remove the cookies for logout
+      // we have to reset the tokens 
 })
 
 
