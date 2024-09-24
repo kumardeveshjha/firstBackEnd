@@ -209,6 +209,34 @@ status(200)
 const logoutUser = asyncHandler(async(req,res)=>{
       // First we have to remove the cookies for logout
       // we have to reset the tokens 
+
+     await User.findByIdAndUpdate(
+      req.user._id,
+      {
+            $set:{
+                  refreshToken: undefined
+            }
+      },
+      {
+            new: true
+      }
+
+     )
+
+     const options = {
+      httpOnly: true,        // by these two properies the cokkies can only be modified from server 
+      secure: true          // user can not modify the cookie 
+    }
+
+return res
+.status(200)
+.clearCookie("accessToken", options)
+.clearCookie("refreshToken",refreshToken, options)
+.json(new APIResponse(200, {}, "user loggedout"));
+
+
+
+
 })
 
 
@@ -217,6 +245,7 @@ const logoutUser = asyncHandler(async(req,res)=>{
 
 export {
       registerUser,
-      userlogin
+      userlogin,
+      logoutUser
 
 }
