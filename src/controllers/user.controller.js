@@ -19,10 +19,10 @@ import { APIResponse } from "../utils/APIResponse.js";
 
 const generateAccessAndRefreshToken = async (userId)=>{
       try {
-            const user = User.findById(userId);   // here user is imported as an object
+            const user = await User.findById(userId);   // here user is imported as an object
             const accessToken = user.generateAccessToken()
             const refreshToken = user.generateRefreshToken()
-
+           
             user.refreshToken = refreshToken;  // added the refresh token in user object 
             user.save({validateBeforeSave: false})
 
@@ -154,7 +154,7 @@ if(!username && !email) {
 }
 
 const user = await User.findOne({    // user is the imported User from model 
-      $or : [{username},{email}]     // $or is the mongoDb oparator
+      $or : [{ username },{ email }]     // $or is the mongoDb oparator
 }                                    
 )
 
