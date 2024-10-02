@@ -17,7 +17,7 @@ import { APIResponse } from "../utils/APIResponse.js";
 
 // here we will define the tokens access and refresh 
 
-const generateAccessAndRefreshToken = async (userId)=>{
+const generateAccessAndRefreshTokens = async (userId)=>{
       try {
             const user = await User.findById(userId);   // here user is imported as an object
             const accessToken = user.generateAccessToken()
@@ -164,33 +164,30 @@ if(!user){
 
 
 // This is the method you created wchich you returns from database
-const isPasswordValid = await user.isPasswordCorrect(password);
+// const isPasswordValid = await user.isPasswordCorrect(password);
 
 // if user password is not correct then throw error 
-if(!isPasswordValid){
-      throw new APIResponse(400,"PLease enter correct password ");
-}
+// if(!isPasswordValid){
+//       throw new ApiError(400,"PLease enter correct password ");
+// }
 
 // Now we can take the access and refresh token 
 
-const {accessToken, refreshToken} = await generateAccessAndRefreshToken(user._id)  // here we have destructured it 
-
+const {accessToken, refreshToken} = await generateAccessAndRefreshTokens(user._id)  // here we have destructured it 
 const loggedInUser = await User.findById(user._id).
 select("-password -refreshToken")          // so now this is the details and all fields which we have to send the logged user
 
 // Now cookies 
-
 const options = {
       httpOnly: true,        // by these two properies the cokkies can only be modified from server 
       secure: true          // user can not modify the cookies
 }
 
-
 return res.
 status(200)
 .cookie("accessToken",accessToken,options)
 .cookie("refreshToken",refreshToken, options)
-.json(
+.json(                        // optional 
       new APIResponse(       // this is so the user can change the cookies 
             200,
             {
