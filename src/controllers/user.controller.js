@@ -164,8 +164,11 @@ if(!user){
 
 
 // This is the method you created wchich you returns from database
-// const isPasswordValid = await user.isPasswordCorrect(password);
-
+const isPasswordValid = await user.isPasswordCorrect(password);
+  console.log(isPasswordValid);
+  console.log(user.password)
+  console.log(password);
+  
 // if user password is not correct then throw error 
 // if(!isPasswordValid){
 //       throw new ApiError(400,"PLease enter correct password ");
@@ -194,7 +197,7 @@ status(200)
                   user: loggedInUser, accessToken,
                   refreshToken
             },
-            "User Has been registered successfully"
+            "User Has been logged in successfully"
       )
 )
 

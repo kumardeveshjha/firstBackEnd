@@ -19,7 +19,8 @@ app.use(express.json({limit:"20kb"}))   // this is for costom data limit
 app.use(express.urlencoded({extended:true,limit:"20kb"}));
 // static to store the public file store
 app.use(express.static("public"));
-app.use(cookieParser())
+app.use(cookieParser());
+// app.use(verifyToken);
 
 
 

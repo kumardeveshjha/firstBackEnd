@@ -51,7 +51,7 @@ const userSchema = new Schema(
 
 userSchema.pre("save", async function (next){        // pre is a hook which executes just before we save any data // also don't use arrow function here 
         if(this.isModified("password")){                   // here we will encrypt the password 
-            this.passwrord = await bcrypt.hash(this.password,10)
+            this.password = await bcrypt.hash(this.password,10)
         }
         next()
      })
