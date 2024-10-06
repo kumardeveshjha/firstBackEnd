@@ -170,16 +170,16 @@ const isPasswordValid = await user.isPasswordCorrect(password);
   console.log(password);
   
 // if user password is not correct then throw error 
-// if(!isPasswordValid){
-//       throw new ApiError(400,"PLease enter correct password ");
-// }
+if(!isPasswordValid){
+      throw new ApiError(400,"PLease enter correct password ");
+}
 
 // Now we can take the access and refresh token 
 
 const {accessToken, refreshToken} = await generateAccessAndRefreshTokens(user._id)  // here we have destructured it 
 const loggedInUser = await User.findById(user._id).
 select("-password -refreshToken")          // so now this is the details and all fields which we have to send the logged user
-
+console.log(accessToken,refreshToken);
 // Now cookies 
 const options = {
       httpOnly: true,        // by these two properies the cokkies can only be modified from server 
@@ -211,7 +211,7 @@ const logoutUser = asyncHandler(async(req,res)=>{
       // we have to reset the tokens 
 
      await User.findByIdAndUpdate(
-      req.user._id,
+      req.user._id,                  // here finding the user to update
       {
             $set:{
                   refreshToken: undefined
@@ -222,10 +222,9 @@ const logoutUser = asyncHandler(async(req,res)=>{
       }
 
      )
-
-     const options = {
+    const options = {
       httpOnly: true,        // by these two properies the cokkies can only be modified from server 
-      secure: true          // user can not modify the cookie 
+      // secure: true          // user can not modify the cookie 
     }
 
 return res
