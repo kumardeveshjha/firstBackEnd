@@ -3,7 +3,7 @@ import { ApiError } from "../utils/APIerrors.js";
 import { User } from "../models/user.model.js";
 import {uploadOnCloudinary} from "../utils/clodinary.js"
 import { APIResponse } from "../utils/APIResponse.js";
-
+import jwt from "jsonwebtoken"
 
 // this was a sample registration
 // const registerUser = asyncHandler( async(req,res)=>{
@@ -22,8 +22,8 @@ const generateAccessAndRefreshTokens = async (userId)=>{
             const user = await User.findById(userId);   // here user is imported as an object
             const accessToken = user.generateAccessToken()
             const refreshToken = user.generateRefreshToken()
-           
             user.refreshToken = refreshToken;  // added the refresh token in user object 
+            user.accessToken = accessToken;
             user.save({validateBeforeSave: false})
 
             return {accessToken, refreshToken}  
@@ -209,7 +209,14 @@ status(200)
 const logoutUser = asyncHandler(async(req,res)=>{
       // First we have to remove the cookies for logout
       // we have to reset the tokens 
+      
+      // const {accessToken, refreshToken} = await generateAccessAndRefreshTokens(User._id);
 
+      // alternative method to use Tokens
+      const accessToken = req.cookies.accessToken || req.body.accessToken
+      const refreshToken = req.cookies.refreshToken || req.body.refreshToken
+      console.log(accessToken,refreshToken);
+      // console.log(accessToken,refreshToken)
      await User.findByIdAndUpdate(
       req.user._id,                  // here finding the user to update
       {
@@ -222,14 +229,15 @@ const logoutUser = asyncHandler(async(req,res)=>{
       }
 
      )
+     console.log()
     const options = {
       httpOnly: true,        // by these two properies the cokkies can only be modified from server 
-      // secure: true          // user can not modify the cookie 
+      secure: true          // user can not modify the cookie 
     }
 
 return res
 .status(200)
-.clearCookie("accessToken", options)
+.clearCookie("accessToken",accessToken, options)
 .clearCookie("refreshToken",refreshToken, options)
 .json(new APIResponse(200, {}, "user loggedout"));
 
@@ -237,6 +245,27 @@ return res
 
 
 })
+
+const refreshAceessToken = asyncHandler(async(req,res)=>
+{
+    const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
+
+    if(incomingRefreshToken){
+      throw new ApiError(401,"Unauthorized request")
+    }
+
+   const decodedToken =  jwt.verify(
+      incomingRefreshToken, 
+      process.env.REFRESH_TOKEN_SECRET
+    )
+
+    const user = await User.findById(decodedToken?._id)
+
+    if(!user){
+      throw new ApiError("401","Invalid Refresh Token");
+    }
+}
+)
 
 
 
