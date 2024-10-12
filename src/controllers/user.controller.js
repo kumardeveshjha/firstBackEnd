@@ -25,7 +25,7 @@ const generateAccessAndRefreshTokens = async (userId)=>{
             user.refreshToken = refreshToken;  // added the refresh token in user object 
             user.accessToken = accessToken;
             user.save({validateBeforeSave: false})
-
+           
             return {accessToken, refreshToken}  
 
       } catch (error) {
@@ -250,9 +250,9 @@ return res
 const refreshAceessToken = asyncHandler(async(req,res)=>
 {
     try {
-      const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
+      const incomingRefreshToken = await req.cookies.refreshToken || req.body.refreshToken;
+      console.log("incomingRefreshToken",incomingRefreshToken);
       
-      console.log(incomingRefreshToken);
       if(!incomingRefreshToken){
         throw new ApiError(401,"Unauthorized request")
       }
@@ -273,11 +273,14 @@ const refreshAceessToken = asyncHandler(async(req,res)=>
         secure: true
       }
   
-      const {accessToken, newRefreshToken} = await generateAccessAndRefreshTokens(User._id);
-  
+      // const {accessToken, newRefreshToken} = await generateAccessAndRefreshTokens(User._id);
+      const newRefreshToken = await req.cookies.newRefreshToken || req.body.newRefreshToken;
+      const accessToken = await req.cookies.accessToken || req.body.accessToken
+     
+      console.log("newRefreshToken",newRefreshToken,accessToken)
       return res.status(200)
       .cookie("accessToken",accessToken, options)
-      .cookie("refreshToken", newRefreshToken, options)
+      .cookie("newRefreshToken", newRefreshToken, options)
       .json(
         new APIResponse(
               200,
@@ -286,7 +289,8 @@ const refreshAceessToken = asyncHandler(async(req,res)=>
         )
       )
     } catch (error) {
-        throw new APIResponse(400,"invalid Refresh token")
+      console.log(error)
+        throw new ApiError(400,"invalid Refresh token")
     }
 }
 )
