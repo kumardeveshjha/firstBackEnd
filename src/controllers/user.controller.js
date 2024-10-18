@@ -343,6 +343,26 @@ const updateAcoountInfo = asyncHandler( async(req,res) => {
             },
             {new: true}
       ).select("-password")
+
+      return res
+      .status(200)
+      .json(new APIResponse(200, user, "User details has been updated successfully "))
+})
+
+const updateAvatar = asyncHandler(async(req,res)=>{
+      const avatarLocalPath  = req.file?.path;
+
+      if(!avatarLocalPath){
+            throw new ApiError(400, "The avatar file is not available")
+      }
+
+
+      const avatar = await uploadOnCloudinary(avatarLocalPath);
+
+      if(!avatar.url){
+            throw new ApiError(400, "Error while uploading avatar ")
+      }
+
 })
 
 
