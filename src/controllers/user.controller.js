@@ -253,6 +253,7 @@ const refreshAceessToken = asyncHandler(async(req,res)=>
       const incomingRefreshToken = await req.cookies.refreshToken || req.body.refreshToken;
       console.log("incomingRefreshToken",incomingRefreshToken);
       
+
       if(!incomingRefreshToken){
         throw new ApiError(401,"Unauthorized request")
       }
@@ -274,7 +275,7 @@ const refreshAceessToken = asyncHandler(async(req,res)=>
       }
   
       // const {accessToken, newRefreshToken} = await generateAccessAndRefreshTokens(User._id);
-      const newRefreshToken = await req.cookies.newRefreshToken || req.body.newRefreshToken;
+      const newRefreshToken = await req.cookies.refreshToken || req.body.refreshToken;
       const accessToken = await req.cookies.accessToken || req.body.accessToken
      
       console.log("newRefreshToken",newRefreshToken,accessToken)
@@ -293,7 +294,60 @@ const refreshAceessToken = asyncHandler(async(req,res)=>
         throw new ApiError(400,"invalid Refresh token")
     }
 }
-)
+);
+
+const changeCurrentPassword = asyncHandler( async(req,res)=>{
+      const {oldPassword, newPassword, confPassword} = req.body;
+ 
+     const user  = await User.findById(req.user?._id);
+     const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
+//      if(!(newPassword=== confPassword)){
+//           throw new ApiError(400," The password didn't matched");
+//      }
+     if(!isPasswordCorrect){
+      throw new ApiError(400, "Invalid Password")
+     }
+
+     user.password = newPassword;
+     await user.save({validateBeforeSave:false})
+
+     return res
+     .status(200)
+     .json(new APIResponse(200,{},"Password changed"))
+
+
+})
+
+const getCurrentUser = asyncHandler(async(req,res) =>{
+      return res
+      .status(200)
+      .json(200, req.user, "Current user found")
+})
+
+
+const updateAcoountInfo = asyncHandler( async(req,res) => {
+      const {fullName,userName, email} = req.body;
+
+      if(!(fullName || userName)){
+            throw new ApiError(400,"All fields are required !!");
+      }
+
+      const user = User.findByIdAndUpdate(
+            req.user?._id,
+            {
+                  $set:{
+                        fullName,
+                        email,
+                        userName
+                  }
+            },
+            {new: true}
+      ).select("-password")
+})
+
+
+
+
 
 
 
@@ -303,5 +357,7 @@ export {
       registerUser,
       userlogin,
       logoutUser,
-      refreshAceessToken
+      refreshAceessToken,
+      changeCurrentPassword,
+      getCurrentUser
 }
