@@ -301,7 +301,7 @@ const changeCurrentPassword = asyncHandler( async(req,res)=>{
  
      const user  = await User.findById(req.user?._id);
      const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
-//      if(!(newPassword=== confPassword)){
+//      if(!(newPassword === confPassword)){
 //           throw new ApiError(400," The password didn't matched");
 //      }
      if(!isPasswordCorrect){
@@ -325,6 +325,8 @@ const getCurrentUser = asyncHandler(async(req,res) =>{
 })
 
 
+
+// this is to update only the data about user 
 const updateAcoountInfo = asyncHandler( async(req,res) => {
       const {fullName,userName, email} = req.body;
 
@@ -332,16 +334,16 @@ const updateAcoountInfo = asyncHandler( async(req,res) => {
             throw new ApiError(400,"All fields are required !!");
       }
 
-      const user = User.findByIdAndUpdate(
+      const user = await User.findByIdAndUpdate(
             req.user?._id,
             {
-                  $set:{
-                        fullName,
+                  $set: {
+                        fullName,    // or we can use  fullName: fullName
                         email,
                         userName
                   }
             },
-            {new: true}
+            {new: true}     // Information after update returns here
       ).select("-password")
 
       return res
@@ -349,8 +351,13 @@ const updateAcoountInfo = asyncHandler( async(req,res) => {
       .json(new APIResponse(200, user, "User details has been updated successfully "))
 })
 
-const updateAvatar = asyncHandler(async(req,res)=>{
-      const avatarLocalPath  = req.file?.path;
+
+// this is to update the files in the user 
+const updateAvatar = asyncHandler( async(req,res)=>{
+      
+      // first we will get the path of the file and this can be get through multer middleware
+      
+      const avatarLocalPath  = req.file?.path; 
 
       if(!avatarLocalPath){
             throw new ApiError(400, "The avatar file is not available")
@@ -362,7 +369,51 @@ const updateAvatar = asyncHandler(async(req,res)=>{
       if(!avatar.url){
             throw new ApiError(400, "Error while uploading avatar ")
       }
+   
+   const user = await User.findByIdAndUpdate(
+      req.user?._id,
+      {
+            $set:{
+                  avatar: avatar.url
+            }
+      },
+      {new:true}
+   ).select("-password");
 
+   return res
+   .status(200)
+   .json(APIResponse(200,user, "The avatar has been updated successfully"))
+
+});
+
+const updateCoverImage = await asyncHandler(async(req,res)=>{
+     const coverImageLocalPath = req.file?.path;
+     console.log(coverImageLocalPath);
+     
+     if(coverImageLocalPath){
+      throw new ApiError(400,"Cover Image Local path does not found")
+     }
+
+     const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+//      console.log(coverImage.url);
+     
+     if(!coverImage.url){
+      throw new ApiError(400, "The coverImage url not found");
+     }
+
+     const user = await User.findByIdAndUpdate(
+      req.user?._id,
+      {
+            $set: {
+                  coverImage: coverImage.url
+            }
+      },
+      {new: true}
+     ).select("-password")
+
+     return res
+     .status(200)
+     .json(APIResponse(200,user,`The coverImage of ${user.fullName} has been updated`))
 })
 
 
@@ -379,5 +430,9 @@ export {
       logoutUser,
       refreshAceessToken,
       changeCurrentPassword,
-      getCurrentUser
+      updateAcoountInfo,
+      getCurrentUser,
+      updateAvatar,
+      updateCoverImage
+
 }

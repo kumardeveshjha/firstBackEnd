@@ -1,5 +1,5 @@
 import {Router} from "express";
-import { logoutUser, registerUser, userlogin, refreshAceessToken} from "../controllers/user.controller.js";
+import { logoutUser, registerUser, userlogin, refreshAceessToken, getCurrentUser, updateAcoountInfo, updateCoverImage} from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyToken } from "../middlewares/auth.miidleware.js";
 const router = Router()
@@ -26,6 +26,19 @@ router.route("/logout").post(verifyToken, logoutUser);
 
 // access token 
 router.route("/refresh-token").post(refreshAceessToken);
+
+// current user rote
+
+router. route("/current-User").post(getCurrentUser)
+
+// updated user info 
+
+router.route("/updated-account").post(updateAcoountInfo);
+
+// coverImage update 
+
+router.route("/updateCoverImage").post(updateCoverImage);
+
 
 
 
