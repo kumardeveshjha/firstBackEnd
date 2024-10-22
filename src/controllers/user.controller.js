@@ -357,7 +357,9 @@ const updateAvatar = asyncHandler( async(req,res)=>{
       
       // first we will get the path of the file and this can be get through multer middleware
       
-      const avatarLocalPath  = req.file?.path; 
+      const avatarLocalPath  =  req.file?.path; 
+      console.log(avatarLocalPath);
+      
 
       if(!avatarLocalPath){
             throw new ApiError(400, "The avatar file is not available")
@@ -395,7 +397,7 @@ const updateCoverImage = await asyncHandler(async(req,res)=>{
      }
 
      const coverImage = await uploadOnCloudinary(coverImageLocalPath);
-//      console.log(coverImage.url);
+     console.log(coverImage);
      
      if(!coverImage.url){
       throw new ApiError(400, "The coverImage url not found");
@@ -413,7 +415,7 @@ const updateCoverImage = await asyncHandler(async(req,res)=>{
 
      return res
      .status(200)
-     .json(APIResponse(200,user,`The coverImage of ${user.fullName} has been updated`))
+     .json(APIResponse(200, user,`The coverImage of ${user.fullName} has been updated`))
 })
 
 

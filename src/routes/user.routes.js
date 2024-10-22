@@ -1,5 +1,5 @@
 import {Router} from "express";
-import { logoutUser, registerUser, userlogin, refreshAceessToken, getCurrentUser, updateAcoountInfo, updateCoverImage} from "../controllers/user.controller.js";
+import { logoutUser, registerUser, userlogin, refreshAceessToken, getCurrentUser, updateAcoountInfo, updateCoverImage, updateAvatar} from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyToken } from "../middlewares/auth.miidleware.js";
 const router = Router()
@@ -34,6 +34,10 @@ router. route("/current-User").post(getCurrentUser)
 // updated user info 
 
 router.route("/updated-account").post(updateAcoountInfo);
+
+// update avatar route
+
+router.route("/avatar-update").post(updateAvatar)
 
 // coverImage update 
 
